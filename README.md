@@ -7,7 +7,11 @@ Todai Java Clients
 
 1. `export JAVA_HOME=<path to Java>` (Windows: `set JAVA_HOME=<path to Java>`)
 1. `./gradlew build` (Windows: `gradlew.bat build`)
-1. Jars will be built and deposited into the various `build/libs` directories (e.g. `java/build/libs`, `android/build/libs`). You can then use these jars just as if you had downloaded them.
+1. The SDK Jar will be built and deposited into the `android/build/libs`).
+
+```
+android/build/outputs/aar/todai-client-api-android-0.1.aar
+```
 
 ## Usage
 
