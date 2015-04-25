@@ -1,6 +1,8 @@
 Todai Java Clients
 ===================
 
+[![Build Status](https://travis-ci.org/joninvski/todaiSDK-android.svg?branch=master)](https://travis-ci.org/joninvski/todaiSDK-android)
+
 ### Build From Source
 
 1. `export JAVA_HOME=<path to Java>` (Windows: `set JAVA_HOME=<path to Java>`)
