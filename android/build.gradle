@@ -1,0 +1,74 @@
+// Build instructions for Android library.
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.12.2'
+        classpath 'com.jakewharton.sdkmanager:gradle-plugin:0.12.0'
+        classpath 'org.robolectric:robolectric-gradle-plugin:0.12.0'
+    }
+}
+
+apply plugin: 'android-sdk-manager'
+apply plugin: 'com.android.library'
+apply plugin: 'robolectric'
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion "19.1"
+
+    defaultConfig {
+        minSdkVersion 9
+        targetSdkVersion 19
+        versionCode = VERSION_CODE
+        versionName = VERSION_NAME
+        applicationId "co.todai"
+    }
+
+    sourceSets {
+        main.setRoot('src/main')
+        androidTest.setRoot('src/test')
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+}
+
+// Set the source and target to Java 6.
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-source" << "1.6" << "-target" << "1.6"
+}
+
+android.libraryVariants.all { variant ->
+    def name = variant.buildType.name
+
+    // For each variant add a task to copy the core classes so they are included in the AAR.
+    def copyTask = project.tasks.create(name: "copyCoreToAndroid${name.capitalize()}", type: Copy) {
+        from(project(':core').sourceSets.main.output)
+        into(variant.javaCompile.destinationDir)
+    }
+    copyTask.dependsOn variant.javaCompile
+    variant.packageLibrary.dependsOn copyTask
+
+    // Also define a task to create a raw JAR to support non-AAR users.
+    def rawJarTask = project.tasks.create(name: "rawAndroidJar${name.capitalize()}", type: Jar) {
+        archiveName="source-client-api-android-${project.version}.jar"
+        from(variant.javaCompile.destinationDir)
+    }
+    rawJarTask.dependsOn copyTask
+}
+
+configurations {
+    // Exclude modules that are provided by Android to avoid compilation warning.
+    all*.exclude module: 'commons-logging'
+    all*.exclude module: 'httpclient'
+}
+
+dependencies {
+    compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
+}
+
+archivesBaseName = "todai-client-api-android"
