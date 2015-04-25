@@ -1,7 +1,15 @@
 package co.todai.client.android;
 
+import android.content.Context;
+
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Model;
+
+import java.util.List;
+import android.content.pm.PackageManager;
+import android.Manifest;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 /*
  * Class responsible for the management of the temporary DB that stores events until they are sent to the server.
@@ -12,16 +20,17 @@ public class TodaiEventDB {
   private final Context context;
 
   public TodaiEventDB(final Context context) {
+    this.context = context;
     ActiveAndroid.initialize(context);
   }
 
   public void store(final Model event) {
     event.save();
-    event.sync(); // Let's try to sync
+    sync(); // Let's try to sync with the server
   }
 
   public void remove(final Model event) {
-    event.remove();
+    event.delete();
   }
 
   public void sync() {
@@ -40,13 +49,12 @@ public class TodaiEventDB {
     // otherwise, leave it in the database
   }
 
-  /* 
+  /*
    * Checks if the phone is connected to a network
    */
-  @Override
   private boolean isNetworkConnected() {
     boolean canCheckNetworkState = context.checkCallingOrSelfPermission(Manifest.permission.ACCESS_NETWORK_STATE) ==
-      PackageManager.PERMISSION_GRANTED;
+                                   PackageManager.PERMISSION_GRANTED;
 
     if (!canCheckNetworkState) return true; // If difficulties in knowing if we have network just say we are connected
 
@@ -57,3 +65,4 @@ public class TodaiEventDB {
     return activeNetworkInfo != null && activeNetworkInfo.isConnected();
   }
 }
+

@@ -7,6 +7,7 @@ import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
 
 import java.util.List;
+import android.location.Location;
 
 /*
  * An LocationEvent is an event that indicates a location the phone was at a certain time

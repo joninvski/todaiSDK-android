@@ -1,9 +1,10 @@
-package co.todai.client.java;
+package co.todai.client.android;
 
 import android.content.Context;
 import android.location.Location;
 
 import java.util.List;
+import android.location.LocationManager;
 
 /*
  * Small provider just to abstract on how to get last know location
@@ -12,14 +13,14 @@ public final class LastLocationProvider {
 
   private final LocationManager mLocationManager;
 
-  private OneTimeLocationListener(Context context) {
+  public LastLocationProvider(final Context context) {
     mLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
   }
 
   /*
    * Returns the most accurate already know location on the phone
    */
-  public Location getLastKnownLocation() throws NoProviderException {
+  public Location getLastKnownLocation() {
     List<String> matchingProviders = mLocationManager.getAllProviders();
 
     Location mostAccurate = null;
@@ -37,7 +38,7 @@ public final class LastLocationProvider {
       }
     }
     if (mostAccurate == null) {
-      throw new NoProviderException("No provider was available");
+      // TODO deal with error
     }
 
     return mostAccurate;

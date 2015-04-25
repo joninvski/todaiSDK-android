@@ -1,4 +1,4 @@
-package co.todai.client.java;
+package co.todai.client.android;
 
 /*
  * The credentials used to authenticate to the todai server
@@ -9,8 +9,8 @@ public class TodaiCredentials {
     private final String privateKey;
 
     public TodaiCredentials(String userId, String privateKey) {
-        this.userId = projectId;
-        this.privateKey = writeKey;
+        this.userId = userId;
+        this.privateKey = privateKey;
     }
 
     public String getUserId() {

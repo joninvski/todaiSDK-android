@@ -1,4 +1,4 @@
-package co.todai.client.java;
+package co.todai.client.android;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import android.content.Context;
+import android.location.Location;
 
 public class TodaiClient {
 
@@ -31,20 +33,20 @@ public class TodaiClient {
    * Auxiliary Constructor
    */
   public TodaiClient(String userId, String privateKey, Context context) {
-    TodaiClient(TodaiConstant.SERVER_ADDRESS + '/' + SERVER_BASE_URL, new TodaiCredentials(userId, privateKey));
+    this(TodaiConstants.SERVER_BASE_URL, new TodaiCredentials(userId, privateKey), context);
   }
 
   /*
    * Auxiliary Constructor
    */
   public TodaiClient(TodaiCredentials credentials, Context context) {
-    TodaiClient(TodaiConstant.SERVER_ADDRESS + '/' + SERVER_BASE_URL, credentials);
+    this(TodaiConstants.SERVER_BASE_URL, credentials, context);
   }
 
   /*
    * Main Constructor
    */
-  public TodaiClient(String baseUrl, Credentials credentials, Context context) {
+  public TodaiClient(String baseUrl, TodaiCredentials credentials, Context context) {
     this.baseUrl = baseUrl;
     this.credentials = credentials;
     this.lastLocationProvider = new LastLocationProvider(context);
@@ -65,10 +67,10 @@ public class TodaiClient {
    * */
   public void init() {
     final Location lastKnowLocation = lastLocationProvider.getLastKnownLocation();
-    addLocationEvent(location, location.getTime());
-    addActionEventEvent(TodaiConstant.INITIAL_OPEN_APP_EVENT);
+    addLocationEvent(lastKnowLocation, lastKnowLocation.getTime());
+    addActionEvent(TodaiConstants.INITIAL_OPEN_APP_EVENT, System.currentTimeMillis()/1000);
 
-    if(locationGoodEnough(lastKnowLocation) == false) {
+    if(isLocationGoodEnough(lastKnowLocation) == false) {
         // TODO Launch an async task to get a new location
         // that will addLocationEvent with new location when it finds the new one
     }
@@ -106,7 +108,7 @@ public class TodaiClient {
   /*
    * Checks if the passed location is accurate and recent enough
    */
-  private boolean lastLocationGoodEnough(final Location location) {
+  private boolean isLocationGoodEnough(final Location location) {
     return true; // TODO Just a STUB for now
   }
 }
